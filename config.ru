@@ -1,9 +1,7 @@
-require 'resque/server'
-require 'resque_scheduler'
-require './config_resque.rb'
+require './config_cloud.rb'
 
 use Rack::Auth::Basic do |username, password|
-  [username, password] == [ENV["RESQUEWEB_LOGIN"], ENV["RESQUEWEB_PWD"]]
+  [username, password] == [ENV['LAKITU_USERNAME'], ENV['LAKITU_PASSWORD']]
 end
 
 
