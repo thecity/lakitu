@@ -16,9 +16,12 @@ Define these ENV vars (using _[heroku config ...](http://docs.heroku.com/config-
 
 * HEROKU_USER
 * HEROKU_PASS
-* HEROKU_APP (of the app you want to monitor)
+* HEROKU_APP (all for the app you want to monitor)
 * AWS_ACCESS_KEY_ID
 * AWS_SECRET_ACCESS_KEY 
+* REDIS_MASTER_NAME - the EC2 Name tag of the Redis master server
+* REDIS_SLAVE_NAME  - the EC2 Name tag of the Redis slave server
+* MEMCACHED_NAME_PREFIX - the first part of the EC2 Name tags of your memcached servers
 
 <!-- 
 Not right now.
