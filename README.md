@@ -1,11 +1,16 @@
-**Lakitu** lives in the cloud and rescues lost resque racers while throwing spinys at stale dynos.
+**Lakitu** lives in the cloud and rescues lost resque racers while throwing spinys at you when things go wrong.
 
 He can:
-  * Monitor a Resque queue backlog.
-  * Make sure a set of Heroku config settings stay up to date.
-  <!-- * Scale dynos based on data from NewRelic -->
-  * Make sure a set of AWS servers are doing the right thing.
-  <!-- * (maybe) check on a chef server. -->
+
+* Monitor a Resque queue backlog.
+* Make sure a set of Heroku config settings stay up to date.
+<!-- * Scale dynos based on data from NewRelic -->
+* Make sure a set of AWS servers are doing the right thing.
+<!-- * (maybe) check on a chef server. -->
+  
+He will:
+
+* Email you when things break. See lib/alert_mailer.rb
 
 Define these ENV vars (using _[heroku config ...](http://docs.heroku.com/config-vars)_) :
 
