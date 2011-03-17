@@ -7,18 +7,18 @@ redis_uri = ENV["REDIS_URL"]? URI.parse(ENV["REDIS_URL"]) : URI.parse("redis://l
 REDIS = Redis.new(:host => uri.host, :port => uri.port, :password => uri.password)
 Resque.redis = REDIS
 
-# This may need to move in the app, resque needs < 5 minute sample times to scale
-# resque_scaler_config = 
-#   [
-#     { :workers => 1,  :job_count => 0  },
-#     { :workers => 3,  :job_count => 25 },
-#     { :workers => 5,  :job_count => 60 },
-#     { :workers => 8,  :job_count => 80 },
-#     { :workers => 10, :job_count => 100 },
-#     { :workers => 15, :job_count => 150 },
-#     { :workers => 20, :job_count => 200 }
-#   ]
-# HerokuResqueAutoScale::Scaler.scaling_configuration = scaler_config
+# This may need to move in the app, resque rapid sample times to scale
+resque_scaler_config = 
+  [
+    { :workers => 1,  :job_count => 0  },
+    { :workers => 3,  :job_count => 25 },
+    { :workers => 5,  :job_count => 60 },
+    { :workers => 8,  :job_count => 200 },
+    { :workers => 10, :job_count => 500 },
+    { :workers => 15, :job_count => 1000 },
+    { :workers => 20, :job_count => 5000 }
+  ]
+HerokuResqueAutoScale::Scaler.scaling_configuration = scaler_config
 
 NEWRELIC = NewRelicClient.new(ENV['NEW_RELIC_API_KEY'], ENV['NEW_RELIC_ID'], ENV['NEW_RELIC_APPID'])
 
@@ -31,4 +31,4 @@ dyno_scaler_config =
   ]
 HerokuDynoAutoScale::Scaler.scaling_configuration = dyno_scaler_config
 
-RESQUE_QUEUE_LIMIT = 100000
+RESQUE_QUEUE_LIMIT = 100_000

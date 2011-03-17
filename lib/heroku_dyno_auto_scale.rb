@@ -30,7 +30,6 @@ module HerokuDynoAutoScale
   def scale_dynos(cpu)
     @@scale_configuration.reverse_each do |scale_info|
       # Run backwards so it gets set to the highest value first
-      # Otherwise if there were 70 jobs, it would get set to 1, then 2, then 3, etc
 
       # If we have a cpu load greater than or equal to the dyno limit for our configuration
       if cpu >= scale_info[:cpu]
@@ -39,12 +38,12 @@ module HerokuDynoAutoScale
           Scaler.dynos = scale_info[:dynos]
           return scale_info[:dynos]
         end
-      # Otherwise we have a cpu load less than required by the dyno limit
+      # Otherwise we have a cpu load lower than the upscale threshold 
       elsif cpu < scale_info[:cpu]
         if Scaler.dynos > scale_info[:dynos]
           Scaler.dynos = scale_info[:dynos]
           # Return here so we don't keep looping.
-          # This will force dynos to only scale every 5 minutes.
+          # This will force dynos to only scale one increment every run.
           return scale_info[:dynos]
         end
       end

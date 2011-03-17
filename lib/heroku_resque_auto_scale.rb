@@ -34,12 +34,7 @@ module HerokuResqueAutoScale
   end
   
 
-  def after_perform_scale_down(*args)
-    # Nothing fancy, just shut everything down if we have no jobs
-    Scaler.workers = 0 if Scaler.job_count.zero?
-  end
-
-  def after_enqueue_scale_up(*args)
+  def scale_workers(queue_size)
     @@scale_configuration.reverse_each do |scale_info|
       # Run backwards so it gets set to the highest value first
       # Otherwise if there were 70 jobs, it would get set to 1, then 2, then 3, etc
@@ -50,9 +45,14 @@ module HerokuResqueAutoScale
         if Scaler.workers <= scale_info[:workers]
           Scaler.workers = scale_info[:workers]
         end
-        break # We've set or ensured that the worker count is high enough
+        return scale_info[:workers]
+      elsif Scaler.job_count < scale_info[:job_count]
+        if Scaler.workers > scale_info[:workers]
+          Scaler.workers = scale_info[:workers]
+        end
+        # Return so we only scale one notch per run.
+        return scale_info[:workers]
       end
-      
     end
   end
   
