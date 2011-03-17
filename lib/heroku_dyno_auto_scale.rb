@@ -24,11 +24,16 @@ module HerokuDynoAutoScale
           ]
         @@scale_configuration = scale_configuration || default_scaling
       end
+      
+      def scaling_configuration
+        @@scale_configuration
+      end
+    end
   end
   
 
   def scale_dynos(cpu)
-    @@scale_configuration.reverse_each do |scale_info|
+    Scaler.scale_configuration.reverse_each do |scale_info|
       # Run backwards so it gets set to the highest value first
 
       # If we have a cpu load greater than or equal to the dyno limit for our configuration
