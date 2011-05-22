@@ -5,7 +5,7 @@ class NewRelicClient
   format :xml
 
   def initialize(api_key, account_id, application_id)
-    self.class.default_options = {:headers => {:api_key => api_key}}
+    self.class.default_options = {:headers => {'api_key' => api_key}}
     self.class.base_uri "https://rpm.newrelic.com/accounts/#{account_id}/applications/#{application_id}/"
   end
   
