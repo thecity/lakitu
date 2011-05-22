@@ -5,8 +5,9 @@ namespace 'lakitu' do
     run_count = 0
     while true
       puts 'sleeping...'
-      sleep 5 * 60 # 5 minute sample time
-      run_count = (run_count + 1) % 60 # One hour worth of 5-minute intervals (0-55) you can check
+      # sleep 1 * 60 # 1 minute sample time
+      sleep 5 # 5 second sample time, for testing
+      run_count = (run_count + 1) % 60 # One hour worth of 1-minute intervals (0-59) you can check
       
       puts "Run number #{run_count}"
       
