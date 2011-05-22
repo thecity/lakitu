@@ -4,9 +4,8 @@ He can:
 
 * Monitor a Resque queue backlog.
 * Make sure a set of Heroku config settings stay up to date.
-<!-- * Scale dynos based on data from NewRelic -->
+* Scale dynos based on data from NewRelic
 * Make sure a set of AWS servers are doing the right thing.
-<!-- * (maybe) check on a chef server. -->
   
 He will:
 
@@ -16,17 +15,16 @@ Define these ENV vars (using _[heroku config ...](http://docs.heroku.com/config-
 
 * HEROKU_USER
 * HEROKU_PASS
-* HEROKU_APP (all for the app you want to monitor)
+* HEROKU_APP 
+
 * AWS_ACCESS_KEY_ID
 * AWS_SECRET_ACCESS_KEY 
-* REDIS_MASTER_NAME - the EC2 Name tag of the Redis master server
-* REDIS_SLAVE_NAME  - the EC2 Name tag of the Redis slave server
-* MEMCACHED_NAME_PREFIX - the first part of the EC2 Name tags of your memcached servers
 
-<!-- 
-Not right now.
 * NEW_RELIC_API_KEY
 * NEW_RELIC_ID
-* NEW_RELIC_APPID -->
+* NEW_RELIC_APPID 
+
+* MEMCACHED_NAME_PREFIX - the first part of the EC2 Name tags of your memcached servers
+* REDIS_URL - the URL of your redis server
 
 This will give Lakitu access to both sides of the app and make sure they're in good shape.

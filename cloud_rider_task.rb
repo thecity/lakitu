@@ -5,57 +5,55 @@ namespace 'lakitu' do
     run_count = 0
     while true
       puts 'sleeping...'
-      sleep 1 * 60 # 1 minute sample time
-      run_count = (run_count + 1) % 60 # One hour worth of 1-minute intervals (0-59) you can check
+      sleep 5 * 60 # 5 minute sample time
+      run_count = (run_count + 1) % 60 # One hour worth of 5-minute intervals (0-55) you can check
       
       puts "Run number #{run_count}"
-      
-      # Run 1, 2, 3, 4... (every minute)
       
       # Run 0, 5, 10, 15... (every 5 minutes)
       if run_count % 5 == 0
         # Scale the dynos based CPU load
-        # Not doing this right now, the city should do it on its own so we don't get stuck with 1
-        # dyno when lakitu crashes and it's 9am on Monday.
-        # if (health = NEWRELIC.application_health).present?
-        #   dynos = HerokuDynoAutoScale::Scaler.scale_dynos(health[:cpu])
-        # end
+        if (health = NEWRELIC.application_health).present?
+          dynos = HerokuDynoAutoScale::Scaler.scale_dynos(health[:cpu])
+        end
       # Run 0, 10, 20, 30, 40, 50 (every 10 minutes)        
       elsif run_count % 10 == 0
         # Check on our EC2 services.
         
         heroku_config = HEROKU.config_vars(ENV['HEROKU_APP'])
         
-        # Redis should be up
-        redis_master = EC2.servers.detect {|server| server.tags['Name'] == ENV['REDIS_MASTER_NAME'] }
-        if !redis_master.ready?
-          AlertMailer.deliver_alert("Redis alert - master server down",
-            "Redis Severity 2:\n\n Redis master server #{redis_server.id} is DOWN.") 
-        end
+        # We're using redistogo. If we move to EC2 for Redis, these would be handy.
         
-        # Redis slave should be up
-        redis_slave = EC2.servers.detect {|server| server.tags['Name'] == ENV['REDIS_SLAVE_NAME'] }
-        if !redis_server.ready?
-          AlertMailer.deliver_alert("Redis alert - slave server down",
-            "Redis Severity 2:\n\n Redis slave server #{redis_server.id} is down!.") 
-        end
+        # # Redis should be up
+        # redis_master = EC2.servers.detect {|server| server.tags['Name'] == ENV['REDIS_MASTER_NAME'] }
+        # if !redis_master.ready?
+        #   AlertMailer.deliver_alert("Redis alert - master server down",
+        #     "Redis Severity 2:\n\n Redis master server #{redis_server.id} is DOWN.") 
+        # end
+        # 
+        # # Redis slave should be up
+        # redis_slave = EC2.servers.detect {|server| server.tags['Name'] == ENV['REDIS_SLAVE_NAME'] }
+        # if !redis_server.ready?
+        #   AlertMailer.deliver_alert("Redis alert - slave server down",
+        #     "Redis Severity 2:\n\n Redis slave server #{redis_server.id} is down!.") 
+        # end
         
         # Site redis URL should match the current IP
-        redis_master_address = 'redis://' + redis_master.private_dns_name
-        if heroku_config['REDIS_URL'] != redis_master_address
-          AlertMailer.deliver_alert("Redis alert - server misconfigured.", 
-            "Redis Severity 2:\n\n Redis server address at #{redis_master_address} does not match #{heroku_config['REDIS_URL']} in #{ENV['HEROKU_APP']}.")
-        end
+        # redis_master_address = 'redis://' + redis_master.private_dns_name
+        # if heroku_config['REDIS_URL'] != redis_master_address
+        #   AlertMailer.deliver_alert("Redis alert - server misconfigured.", 
+        #     "Redis Severity 2:\n\n Redis server address at #{redis_master_address} does not match #{heroku_config['REDIS_URL']} in #{ENV['HEROKU_APP']}.")
+        # end
         
         # All the memcached servers should be up
-        dead_memcached_server = EC2.servers.select {|server| server.tags['Name'].include?(ENV['MEMCACHED_NAME_PREFIX']) }.detect(false) { |server| !server.ready? }
+        dead_memcached_server = EC2.servers.find_all {|server| server.tags['Name'].include?(ENV['MEMCACHED_NAME_PREFIX']) }.detect(false) { |server| !server.ready? }
         unless dead_memcached_server
           AlertMailer.deliver_alert("Memcached alert - server down", 
             "Memcached Severity 2:\n\n Memcached server #{redis_server.id} is DOWN.") 
         end
         
         # Site memcached server list should contain only listed servers
-        memcached_addresses  = EC2.servers.select {|server| server.tags['Name'].include?(ENV['MEMCACHED_NAME_PREFIX']) }.collect{|server| server.private_dns_name }
+        memcached_addresses  = EC2.servers.find_all {|server| server.tags['Name'].include?(ENV['MEMCACHED_NAME_PREFIX']) }.collect{|server| server.private_dns_name }
         if !heroku_config['MEMCACHED_SERVERS'].split(',').to_set.subset?(memcached_addresses.to_set)
           AlertMailer.deliver_alert("Memcached alert - server misconfigured.", 
             "Memcached Severity 2:\n\n Memcached server addresses of #{memcached_addresses.join(',')} does not match #{heroku_config['MEMCACHED_SERVERS']} in #{ENV['HEROKU_APP']}.")
@@ -75,8 +73,8 @@ namespace 'lakitu' do
               "Resque Severity 2:\n\n Queue size: #{queue_size}, expected < #{RESQUE_QUEUE_LIMIT}\n\n Workers #{workers}, expected > 0.\n\n")
           end
         rescue Errno::ECONNREFUSED => e
-          AlertMailer.deliver_alert("Resque ERROR", 
-            "Resque cannot communicate with Redis. This is bad!")
+          AlertMailer.deliver_alert("Resque connectivity error", 
+            "Resque severity 2:\n\n Resque cannot communicate with Redis. This is bad!")
         end
       # Run 0, 20, 40 (every 20 minutes)
       elsif run_count % 20 == 0
