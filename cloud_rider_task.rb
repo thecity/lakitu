@@ -12,14 +12,16 @@ namespace 'lakitu' do
       
       # Run 0, 5, 10, 15... (every 5 minutes)
       if run_count % 5 == 0
+        puts 'Scaling dynos...'
         # Scale the dynos based CPU load
         if (health = NEWRELIC.application_health).present?
           dynos = HerokuDynoAutoScale::Scaler.scale_dynos(health[:cpu])
+          puts 'New Relic reported CPU usage of ' + health[:cpu] + ', dynos set to ' + dynos
         end
       # Run 0, 10, 20, 30, 40, 50 (every 10 minutes)        
       elsif run_count % 10 == 0
+        puts 'Checking EC2 servers'
         # Check on our EC2 services.
-        
         heroku_config = HEROKU.config_vars(ENV['HEROKU_APP'])
         
         # We're using redistogo. If we move to EC2 for Redis, these would be handy.
@@ -48,19 +50,22 @@ namespace 'lakitu' do
         # All the memcached servers should be up
         dead_memcached_server = EC2.servers.find_all {|server| server.tags['Name'].include?(ENV['MEMCACHED_NAME_PREFIX']) }.detect(false) { |server| !server.ready? }
         unless dead_memcached_server
+          puts "Memcached server #{dead_memcached_server.id} was found dead!"
           AlertMailer.deliver_alert("Memcached alert - server down", 
-            "Memcached Severity 2:\n\n Memcached server #{redis_server.id} is DOWN.") 
+            "Memcached Severity 2:\n\n Memcached server #{dead_memcached_server.id} is DOWN.") 
         end
         
         # Site memcached server list should contain only listed servers
         memcached_addresses  = EC2.servers.find_all {|server| server.tags['Name'].include?(ENV['MEMCACHED_NAME_PREFIX']) }.collect{|server| server.private_dns_name }
         if !heroku_config['MEMCACHED_SERVERS'].split(',').to_set.subset?(memcached_addresses.to_set)
+          puts "Memcached servers were misconfigured: #{memcached_addresses.join(',')} does not match #{heroku_config['MEMCACHED_SERVERS']}"
           AlertMailer.deliver_alert("Memcached alert - server misconfigured.", 
             "Memcached Severity 2:\n\n Memcached server addresses of #{memcached_addresses.join(',')} does not match #{heroku_config['MEMCACHED_SERVERS']} in #{ENV['HEROKU_APP']}.")
         end
         
       # Run 0, 15, 30, 45 (every 15 minutes)
       elsif run_count % 15 == 0
+        puts "Checking Resque"
         # Check the resque queue size and, implicitly, redis connectivity
         is_error   = false
         queue_size = 0
@@ -69,12 +74,14 @@ namespace 'lakitu' do
           workers    = Resque.info[:workers].to_i
           
           if queue_size >= RESQUE_QUEUE_LIMIT or workers == 0
+            puts "Queue or worker size error: Queue size: #{queue_size}, expected < #{RESQUE_QUEUE_LIMIT}\n\n Workers #{workers}, expected > 0"
             AlertMailer.deliver_alert("Resque queue size alert", 
               "Resque Severity 2:\n\n Queue size: #{queue_size}, expected < #{RESQUE_QUEUE_LIMIT}\n\n Workers #{workers}, expected > 0.\n\n")
           end
         rescue Errno::ECONNREFUSED => e
+          puts "Unable to connect to redis server #{Resque.redis.id}!"
           AlertMailer.deliver_alert("Resque connectivity error", 
-            "Resque severity 2:\n\n Resque cannot communicate with Redis. This is bad!")
+            "Resque severity 2:\n\n Resque cannot communicate with Redis at URL #{Resque.redis.id}. This is bad!")
         end
       # Run 0, 20, 40 (every 20 minutes)
       elsif run_count % 20 == 0
