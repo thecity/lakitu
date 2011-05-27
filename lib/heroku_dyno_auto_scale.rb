@@ -10,7 +10,7 @@ module HerokuDynoAutoScale
         @@heroku.info(ENV['HEROKU_APP'])[:dynos].to_i
       end
 
-      def workers=(qty)
+      def dynos=(qty)
         @@heroku.set_dynos(ENV['HEROKU_APP'], qty)
       end
 
@@ -30,20 +30,20 @@ module HerokuDynoAutoScale
       end
       
       def scale_dynos(rpm)
-        Scaler.scale_configuration.reverse_each do |scale_info|
+        self.scaling_configuration.reverse_each do |scale_info|
           # Run backwards so it gets set to the highest value first
 
           # If we have an rpm  greater than or equal to the dyno limit for our configuration
           if rpm >= scale_info[:rpm]
             # Set the number of workers unless they are already set to a level we want. 
-            if Scaler.dynos <= scale_info[:dynos]
-              Scaler.dynos = scale_info[:dynos]
+            if self.dynos <= scale_info[:dynos]
+              self.dynos = scale_info[:dynos]
               return scale_info[:dynos]
             end
           # Otherwise we have a rpm lower than the upscale threshold 
           elsif rpm < scale_info[:rpm]
-            if Scaler.dynos > scale_info[:dynos]
-              Scaler.dynos = scale_info[:dynos]
+            if self.dynos > scale_info[:dynos]
+              self.dynos = scale_info[:dynos]
               # Return here so we don't keep looping.
               # This will force dynos to only scale one increment every run.
               return scale_info[:dynos]

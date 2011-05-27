@@ -16,18 +16,18 @@ namespace 'lakitu' do
     while true
       puts 'sleeping...'
       # sleep 1 * 60 # 1 minute sample time
-      sleep 1 # 5 second sample time, for testing
+      sleep 1 # 1 second sample time, for testing
       run_count = (run_count + 1) % 60 # One hour worth of 1-minute intervals (0-59) you can check
       
       puts "Run number #{run_count}"
       
       # Run 0, 5, 10, 15... (every 5 minutes)
-      if run_count % 5 == 0
+      if run_count % 5 == 0 and false
         puts 'Scaling dynos...'
         # Scale the dynos based on RPM
         if health = NEWRELIC.application_health
-          dynos = HerokuDynoAutoScale::Scaler.scale_dynos(health[:rpm])
-          puts 'New Relic reported RPM of ' + health[:rpm] + ', dynos set to ' + dynos
+          dynos = HerokuDynoAutoScale::Scaler.scale_dynos(health[:rpm].to_i)
+          puts "New Relic reported RPM of #{health[:rpm]}, dynos set to #{dynos}"
         end
       # Run 0, 10, 20, 30, 40, 50 (every 10 minutes)        
       elsif run_count % 10 == 0
@@ -59,21 +59,26 @@ namespace 'lakitu' do
         # end
         
         # All the memcached servers should be up
-        dead_memcached_server = EC2.servers.find_all {|server| server.tags['Name'].include?(ENV['MEMCACHED_NAME_PREFIX']) }.detect(false) { |server| !server.ready? }
-        unless dead_memcached_server
+        memcached_servers     = EC2.servers.find_all {|server| server.tags['Name'].include?(ENV['MEMCACHED_NAME_PREFIX']) }
+        dead_memcached_server = memcached_servers.detect { |server| !server.ready? }
+        
+        unless dead_memcached_server.nil?
           puts "Memcached server #{dead_memcached_server.id} was found dead!"
           AlertMailer.deliver_alert("Memcached alert - server down", 
             "Memcached Severity 2:\n\n Memcached server #{dead_memcached_server.id} is DOWN.") 
         end
         
-        # Site memcached server list should contain only listed servers
-        memcached_addresses  = EC2.servers.find_all {|server| server.tags['Name'].include?(ENV['MEMCACHED_NAME_PREFIX']) }.collect{|server| server.private_dns_name }
-        if !heroku_config['MEMCACHED_SERVERS'].split(',').to_set.subset?(memcached_addresses.to_set)
-          puts "Memcached servers were misconfigured: #{memcached_addresses.join(',')} does not match #{heroku_config['MEMCACHED_SERVERS']}"
+        # Heroku memcached server list should contain only listed servers
+        memcached_addresses = memcached_servers.collect{|server| server.private_dns_name }
+        if !heroku_config['MEMCACHE_SERVERS'].split(',').to_set.subset?(memcached_addresses.to_set)
+          puts "Memcached servers were misconfigured: EC2 servers #{memcached_addresses.join(',')} " + \
+               "does not match heroku config #{heroku_config['MEMCACHE_SERVERS']}"
           AlertMailer.deliver_alert("Memcached alert - server misconfigured.", 
-            "Memcached Severity 2:\n\n Memcached server addresses of #{memcached_addresses.join(',')} does not match #{heroku_config['MEMCACHED_SERVERS']} in #{ENV['HEROKU_APP']}.")
+            "Memcached Severity 2:\n\n Memcached server addresses of #{memcached_addresses.join(',')} " + \
+            "does not match configuration of #{heroku_config['MEMCACHED_SERVERS']} in #{ENV['HEROKU_APP']}.")
         end
         
+        puts "EC2 checked"
       # Run 0, 15, 30, 45 (every 15 minutes)
       elsif run_count % 15 == 0
         puts "Checking Resque"
@@ -85,15 +90,18 @@ namespace 'lakitu' do
           workers    = Resque.info[:workers].to_i
           
           if queue_size >= RESQUE_QUEUE_LIMIT or workers == 0
-            puts "Queue or worker size error: Queue size: #{queue_size}, expected < #{RESQUE_QUEUE_LIMIT}\n\n Workers #{workers}, expected > 0"
+            puts "Queue or worker size error: Queue size: #{queue_size}, \
+                  expected < #{RESQUE_QUEUE_LIMIT}\n\n Workers #{workers}, expected > 0"
             AlertMailer.deliver_alert("Resque queue size alert", 
-              "Resque Severity 2:\n\n Queue size: #{queue_size}, expected < #{RESQUE_QUEUE_LIMIT}\n\n Workers #{workers}, expected > 0.\n\n")
+              "Resque Severity 2:\n\n Queue size: #{queue_size}, \
+               expected < #{RESQUE_QUEUE_LIMIT}\n\n Workers #{workers}, expected > 0.\n\n")
           end
         rescue Errno::ECONNREFUSED => e
           puts "Unable to connect to redis server #{Resque.redis.id}!"
           AlertMailer.deliver_alert("Resque connectivity error", 
             "Resque severity 2:\n\n Resque cannot communicate with Redis at URL #{Resque.redis.id}. This is bad!")
         end
+        puts "Resque checked"
       # Run 0, 20, 40 (every 20 minutes)
       elsif run_count % 20 == 0
         # Nothing yet.

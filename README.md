@@ -28,3 +28,5 @@ Define these ENV vars (using _[heroku config ...](http://docs.heroku.com/config-
 * REDIS_URL - the URL of your redis server
 
 This will give Lakitu access to both sides of the app and make sure they're in good shape.
+
+Your production app should store its memcached server list in a comma-separated string of IPs in ENV['MEMCACHE_SERVERS']

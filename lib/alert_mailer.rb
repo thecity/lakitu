@@ -1,3 +1,5 @@
+require 'mail'
+
 class AlertMailer
   def self.deliver_alert(subject, body)
     mailer = AlertMailer.new
