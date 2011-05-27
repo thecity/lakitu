@@ -66,7 +66,7 @@ class NewRelicClient
 #     "metric_value"=>"43.4"}]}
   def application_health
     health = self.class.get('/threshold_values.xml')
-    return false unless health.is_a? Hash and Health.keys.size > 0
+    return false unless health.is_a? Hash and health.keys.size > 0
     
     return {
       :apdex                => health['threshold_values'][0]['metric_value'],
