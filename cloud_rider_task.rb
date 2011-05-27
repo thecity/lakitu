@@ -24,10 +24,10 @@ namespace 'lakitu' do
       # Run 0, 5, 10, 15... (every 5 minutes)
       if run_count % 5 == 0
         puts 'Scaling dynos...'
-        # Scale the dynos based CPU load
+        # Scale the dynos based on RPM
         if (health = NEWRELIC.application_health).present?
-          dynos = HerokuDynoAutoScale::Scaler.scale_dynos(health[:cpu])
-          puts 'New Relic reported CPU usage of ' + health[:cpu] + ', dynos set to ' + dynos
+          dynos = HerokuDynoAutoScale::Scaler.scale_dynos(health[:rpm])
+          puts 'New Relic reported RPM of ' + health[:rpm] + ', dynos set to ' + dynos
         end
       # Run 0, 10, 20, 30, 40, 50 (every 10 minutes)        
       elsif run_count % 10 == 0

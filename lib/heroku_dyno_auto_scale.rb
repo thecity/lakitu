@@ -17,10 +17,10 @@ module HerokuDynoAutoScale
       def scaling_configuration=(scale_configuration)
         default_scaling = 
           [
-            { :cpu => 0.01, :dynos => 1 },
-            { :cpu => 0.10, :dynos => 3 },
-            { :cpu => 0.5,  :dynos => 6 },
-            { :cpu => 0.7,  :dynos => 10 },
+            { :rpm => 100,  :dynos => 10 },
+            { :rpm => 200,  :dynos => 15 },
+            { :rpm => 500,  :dynos => 20 },
+            { :rpm => 1000, :dynos => 30 },
           ]
         @@scale_configuration = scale_configuration || default_scaling
       end
@@ -32,19 +32,19 @@ module HerokuDynoAutoScale
   end
   
 
-  def scale_dynos(cpu)
+  def scale_dynos(rpm)
     Scaler.scale_configuration.reverse_each do |scale_info|
       # Run backwards so it gets set to the highest value first
 
-      # If we have a cpu load greater than or equal to the dyno limit for our configuration
-      if cpu >= scale_info[:cpu]
+      # If we have an rpm  greater than or equal to the dyno limit for our configuration
+      if rpm >= scale_info[:rpm]
         # Set the number of workers unless they are already set to a level we want. 
         if Scaler.dynos <= scale_info[:dynos]
           Scaler.dynos = scale_info[:dynos]
           return scale_info[:dynos]
         end
-      # Otherwise we have a cpu load lower than the upscale threshold 
-      elsif cpu < scale_info[:cpu]
+      # Otherwise we have a rpm lower than the upscale threshold 
+      elsif rpm < scale_info[:rpm]
         if Scaler.dynos > scale_info[:dynos]
           Scaler.dynos = scale_info[:dynos]
           # Return here so we don't keep looping.

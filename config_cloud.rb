@@ -22,10 +22,9 @@ RESQUE_QUEUE_LIMIT = 100_000
 # NewRelic dyno scaling
 dyno_scaler_config = 
   [
-    { :cpu => 0.01, :dynos => 2  },
-    { :cpu => 0.10, :dynos => 5  },
-    { :cpu => 0.5,  :dynos => 12 },
-    { :cpu => 0.7,  :dynos => 20 },
+    { :rpm => 100,  :dynos => 10 },
+    { :rpm => 200,  :dynos => 15 },
+    { :rpm => 500,  :dynos => 20 },
+    { :rpm => 1000, :dynos => 30 },
   ]
 HerokuDynoAutoScale::Scaler.scaling_configuration = dyno_scaler_config
-
