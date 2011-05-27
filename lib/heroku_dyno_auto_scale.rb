@@ -2,7 +2,7 @@
 require 'heroku'
 
 module HerokuDynoAutoScale
-  module Scaler
+  class Scaler
     class << self
       @@heroku = Heroku::Client.new(ENV['HEROKU_USER'], ENV['HEROKU_PASS'])
 
@@ -28,31 +28,30 @@ module HerokuDynoAutoScale
       def scaling_configuration
         @@scale_configuration
       end
-    end
-  end
-  
+      
+      def scale_dynos(rpm)
+        Scaler.scale_configuration.reverse_each do |scale_info|
+          # Run backwards so it gets set to the highest value first
 
-  def scale_dynos(rpm)
-    Scaler.scale_configuration.reverse_each do |scale_info|
-      # Run backwards so it gets set to the highest value first
-
-      # If we have an rpm  greater than or equal to the dyno limit for our configuration
-      if rpm >= scale_info[:rpm]
-        # Set the number of workers unless they are already set to a level we want. 
-        if Scaler.dynos <= scale_info[:dynos]
-          Scaler.dynos = scale_info[:dynos]
-          return scale_info[:dynos]
-        end
-      # Otherwise we have a rpm lower than the upscale threshold 
-      elsif rpm < scale_info[:rpm]
-        if Scaler.dynos > scale_info[:dynos]
-          Scaler.dynos = scale_info[:dynos]
-          # Return here so we don't keep looping.
-          # This will force dynos to only scale one increment every run.
-          return scale_info[:dynos]
+          # If we have an rpm  greater than or equal to the dyno limit for our configuration
+          if rpm >= scale_info[:rpm]
+            # Set the number of workers unless they are already set to a level we want. 
+            if Scaler.dynos <= scale_info[:dynos]
+              Scaler.dynos = scale_info[:dynos]
+              return scale_info[:dynos]
+            end
+          # Otherwise we have a rpm lower than the upscale threshold 
+          elsif rpm < scale_info[:rpm]
+            if Scaler.dynos > scale_info[:dynos]
+              Scaler.dynos = scale_info[:dynos]
+              # Return here so we don't keep looping.
+              # This will force dynos to only scale one increment every run.
+              return scale_info[:dynos]
+            end
+          end
         end
       end
+      
     end
   end
-  
 end
