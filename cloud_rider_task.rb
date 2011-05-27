@@ -25,7 +25,7 @@ namespace 'lakitu' do
       if run_count % 5 == 0
         puts 'Scaling dynos...'
         # Scale the dynos based on RPM
-        if (health = NEWRELIC.application_health).present?
+        if health = NEWRELIC.application_health
           dynos = HerokuDynoAutoScale::Scaler.scale_dynos(health[:rpm])
           puts 'New Relic reported RPM of ' + health[:rpm] + ', dynos set to ' + dynos
         end
