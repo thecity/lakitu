@@ -7,7 +7,8 @@ namespace 'lakitu' do
     required_vars = %w(HEROKU_USER HEROKU_PASS HEROKU_APP 
                        AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY 
                        NEW_RELIC_API_KEY NEW_RELIC_ID NEW_RELIC_APPID 
-                       MEMCACHED_NAME_PREFIX REDIS_URL)
+                       MEMCACHED_NAME_PREFIX REDIS_URL
+                       SENDGRID_DOMAIN SENDGRID_USERNAME SENDGRID_PASSWORD)
     required_vars.each do |var|
       raise "Missing required environment variable #{var}" unless ENV.include?(var)
     end
@@ -15,8 +16,8 @@ namespace 'lakitu' do
     run_count = 0
     while true
       puts 'sleeping...'
-      # sleep 1 * 60 # 1 minute sample time
-      sleep 1 # 1 second sample time, for testing
+      sleep 1 * 60 # 1 minute sample time
+      # sleep 1 # 1 second sample time, for testing
       run_count = (run_count + 1) % 60 # One hour worth of 1-minute intervals (0-59) you can check
       
       puts "Run number #{run_count}"
