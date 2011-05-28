@@ -10,7 +10,7 @@ class AlertMailer
   def setup
     @to = 'jonathan@onthecity.org' # 'notifications@onthecity.org'
     @cc = ''                       # 'sev2@thecity.pagerduty.com'
-    @from = 'lakitu-alerts@onthecity.org'
+    @from = 'lakitu-alerts'
   end
     
   def deliver(subject, body)
