@@ -28,3 +28,12 @@ dyno_scaler_config =
     { :rpm => 1000, :dynos => 30 },
   ]
 HerokuDynoAutoScale::Scaler.scaling_configuration = dyno_scaler_config
+
+Mail.defaults do
+  delivery_method :smtp, { :address              => "smtp.sendgrid.net",
+                           :port                 => 25,
+                           :domain               => ENV['SENDGRID_DOMAIN'],
+                           :user_name            => ENV['SENDGRID_USERNAME'],
+                           :password             => ENV['SENDGRID_PASSWORD'],
+                           :authentication       => 'plain'}
+end

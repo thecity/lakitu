@@ -2,7 +2,6 @@ GEM
   remote: http://rubygems.org/
   specs:
     SystemTimer (1.2.3)
-    activesupport (3.0.4)
     builder (3.0.0)
     cgi_multipart_eof_fix (2.5.0)
     configuration (1.2.0)
@@ -26,13 +25,12 @@ GEM
       rest-client (>= 1.4.0, < 1.7.0)
     httparty (0.7.4)
       crack (= 0.1.8)
-    i18n (0.5.0)
+    i18n (0.6.0)
     json (1.4.6)
     launchy (0.3.7)
       configuration (>= 0.0.5)
       rake (>= 0.8.1)
-    mail (2.2.15)
-      activesupport (>= 2.3.6)
+    mail (2.3.0)
       i18n (>= 0.4.0)
       mime-types (~> 1.16)
       treetop (~> 1.4.8)

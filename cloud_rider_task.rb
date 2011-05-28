@@ -90,16 +90,18 @@ namespace 'lakitu' do
           workers    = Resque.info[:workers].to_i
           
           if queue_size >= RESQUE_QUEUE_LIMIT or workers == 0
-            puts "Queue or worker size error: Queue size: #{queue_size}, \
-                  expected < #{RESQUE_QUEUE_LIMIT}\n\n Workers #{workers}, expected > 0"
+            puts "Queue or worker size error: Queue size: #{queue_size}, " + \
+                  "expected < #{RESQUE_QUEUE_LIMIT}\n\n Workers #{workers}, expected > 0"
             AlertMailer.deliver_alert("Resque queue size alert", 
-              "Resque Severity 2:\n\n Queue size: #{queue_size}, \
-               expected < #{RESQUE_QUEUE_LIMIT}\n\n Workers #{workers}, expected > 0.\n\n")
+              "Resque Severity 2:\n\n " + \
+              "Queue size: #{queue_size}, expected < #{RESQUE_QUEUE_LIMIT}\n" + \
+              "Workers #{workers}, expected > 0.\n\n")
           end
         rescue Errno::ECONNREFUSED => e
-          puts "Unable to connect to redis server #{Resque.redis.id}!"
+          puts "Unable to connect to redis server #{Resque.redis_id}!"
           AlertMailer.deliver_alert("Resque connectivity error", 
-            "Resque severity 2:\n\n Resque cannot communicate with Redis at URL #{Resque.redis.id}. This is bad!")
+            "Resque severity 2:\n\n " + \
+            "Resque cannot communicate with Redis at URL #{Resque.redis_id}. This is bad!")
         end
         puts "Resque checked"
       # Run 0, 20, 40 (every 20 minutes)

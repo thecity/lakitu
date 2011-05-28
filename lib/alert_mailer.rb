@@ -14,12 +14,13 @@ class AlertMailer
   end
     
   def deliver(subject, body)
-    Mail.deliver do
-      to @to
-      cc @cc
-      from @from
-      subject subject
-      body body
-    end
+    mail         = Mail.new
+    mail.to      = @to
+    mail.cc      = @cc
+    mail.from    = @from
+    mail.subject = subject
+    mail.body    = body
+
+    mail.deliver!
   end
 end
