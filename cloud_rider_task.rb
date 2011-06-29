@@ -23,7 +23,7 @@ namespace 'lakitu' do
       puts "Run number #{run_count}"
       
       # Run 0, 5, 10, 15... (every 5 minutes)
-      if run_count % 5 == 0 and false
+      if run_count % 5 == 0
         puts 'Scaling dynos...'
         # Scale the dynos based on RPM
         if health = NEWRELIC.application_health
