@@ -54,6 +54,8 @@ module HerokuDynoAutoScale
         AlertMailer.deliver_alert("New Relic Alert - RPM out of range", 
           "Heroku Severity 2:\n\n New Relic reported RPM of #{rpm}, which was larger than the configured maximum\
           of #{self.scaling_configuration.last[:rpm_range].max}")
+          
+      end
     end
   end
 end
