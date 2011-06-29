@@ -29,9 +29,12 @@ namespace 'lakitu' do
         if health = NEWRELIC.application_health
           dynos = HerokuDynoAutoScale::Scaler.scale_dynos(health[:rpm].to_i)
           puts "New Relic reported RPM of #{health[:rpm]}, dynos set to #{dynos}"
+        else
+          puts "New Relic failed to deliver application health in a timely manner :("
         end
+      end
       # Run 0, 10, 20, 30, 40, 50 (every 10 minutes)        
-      elsif run_count % 10 == 0
+      if run_count % 10 == 0
         puts 'Checking EC2 servers'
         # Check on our EC2 services.
         heroku_config = HEROKU.config_vars(ENV['HEROKU_APP'])
@@ -80,8 +83,10 @@ namespace 'lakitu' do
         end
         
         puts "EC2 checked"
+      end
+      
       # Run 0, 15, 30, 45 (every 15 minutes)
-      elsif run_count % 15 == 0
+      if run_count % 15 == 0
         puts "Checking Resque"
         # Check the resque queue size and, implicitly, redis connectivity
         is_error   = false
@@ -105,14 +110,16 @@ namespace 'lakitu' do
             "Resque cannot communicate with Redis at URL #{Resque.redis_id}. This is bad!")
         end
         puts "Resque checked"
-      # Run 0, 20, 40 (every 20 minutes)
-      elsif run_count % 20 == 0
+      end
+      
+      # Run 0, 20, 40, 0 (every 20 minutes)
+      if run_count % 20 == 0
         # Nothing yet.
-      # Run 5, 10 ... (every 25 minutes)
-      elsif run_count > 0 and run_count % 5 == 0
-        # Nothing yet.
+      end
+      
       # Run 0 (every hour)
-      elsif run_count == 0
+      if run_count == 0
+        # Nothing yet.
       end
     end
     

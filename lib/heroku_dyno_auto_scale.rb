@@ -51,10 +51,12 @@ module HerokuDynoAutoScale
         end  
         
         # We didn't return from the scaling loop - this is a problem.
+        max_rpm = self.scaling_configuration.last[:rpm_range].max
         AlertMailer.deliver_alert("New Relic Alert - RPM out of range", 
-          "Heroku Severity 2:\n\n New Relic reported RPM of #{rpm}, which was larger than the configured maximum\
-          of #{self.scaling_configuration.last[:rpm_range].max}")
-          
+          "Heroku Severity 2:\n\n New Relic reported RPM of #{rpm}, which was larger than the configured maximum of #{max_rpm}")
+        p "Delivered Sev2 Email: Reported RPM was #{rpm}, exceeded max of #{max_rpm}"
+        
+        return dynos
       end
     end
   end
