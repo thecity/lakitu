@@ -4,6 +4,7 @@ require 'resque'
 require 'lib/alert_mailer'
 require 'lib/heroku_dyno_auto_scale'
 require 'lib/new_relic_client'
+require 'lib/heroku_resque_scaler'
 
 # API Access
 NEWRELIC = NewRelicClient.new(ENV['NEW_RELIC_API_KEY'], ENV['NEW_RELIC_ID'], ENV['NEW_RELIC_APPID'])
@@ -28,6 +29,20 @@ dyno_scaler_config =
     { :rpm_range => 1001..20_000, :dynos => 30 },
   ]
 HerokuDynoAutoScale::Scaler.scaling_configuration = dyno_scaler_config
+
+# Configure the autoscaling thresholds
+# Please order this by workers, ascending
+resque_scaler_config = 
+  [
+    { :workers => 1,  :job_count => 1  },
+    { :workers => 3,  :job_count => 25 },
+    { :workers => 5,  :job_count => 60 },
+    { :workers => 8,  :job_count => 200 },
+    { :workers => 10, :job_count => 500 },
+    { :workers => 15, :job_count => 1000 },
+    { :workers => 20, :job_count => 5000 }
+  ]
+HerokuResqueScaler::Scaler.scaling_configuration = resque_scaler_config
 
 Mail.defaults do
   delivery_method :smtp, { :address              => "smtp.sendgrid.net",
