@@ -27,7 +27,7 @@ namespace 'lakitu' do
       if run_count >= 0
         puts "Scaling workers..."
         workers = HerokuResqueScaler::Scaler.scale_workers
-        puts "#{workers} workers running."
+        puts "#{HerokuResqueScaler::Scaler.job_count} jobs, #{workers} workers."
       end
       
       # Run 0, 5, 10, 15... (every 5 minutes)
