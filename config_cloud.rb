@@ -1,10 +1,10 @@
 require 'heroku'
 require 'fog'
 require 'resque'
-require 'lib/alert_mailer'
-require 'lib/heroku_dyno_auto_scale'
-require 'lib/new_relic_client'
-require 'lib/heroku_resque_scaler'
+require './lib/alert_mailer'
+require './lib/heroku_dyno_auto_scale'
+require './lib/new_relic_client'
+require './lib/heroku_resque_scaler'
 
 # API Access
 NEWRELIC = NewRelicClient.new(ENV['NEW_RELIC_API_KEY'], ENV['NEW_RELIC_ID'], ENV['NEW_RELIC_APPID'])
