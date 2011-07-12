@@ -48,7 +48,7 @@ module HerokuResqueScaler
       end
   
       def should_scale_workers?
-        ['production', 'staging'].include?(ENV['RAILS_ENV'])
+        ['production', 'staging'].include?(ENV['RACK_ENV'])
       end
       
       
