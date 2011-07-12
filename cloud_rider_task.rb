@@ -12,6 +12,9 @@ namespace 'lakitu' do
     required_vars.each do |var|
       raise "Missing required environment variable #{var}" unless ENV.include?(var)
     end
+
+    # Synced logging for puts
+    STDERR.sync = STDOUT.sync = true
     
     run_count = 0
     while true
