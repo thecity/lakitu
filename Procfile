@@ -1,0 +1,1 @@
+cloud_rider: bundle exec rake lakitu:cloud_rider
