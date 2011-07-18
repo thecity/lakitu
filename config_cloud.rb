@@ -38,12 +38,13 @@ HerokuDynoAutoScale::Scaler.scaling_configuration = dyno_scaler_config
 resque_scaler_config = 
   [
     { :workers => 1,  :job_count => 1  },
-    { :workers => 3,  :job_count => 25 },
-    { :workers => 5,  :job_count => 60 },
-    { :workers => 8,  :job_count => 200 },
-    { :workers => 10, :job_count => 500 },
-    { :workers => 15, :job_count => 1000 },
-    { :workers => 20, :job_count => 5000 }
+    { :workers => 3,  :job_count => 100 },
+    { :workers => 5,  :job_count => 200 },
+    { :workers => 8,  :job_count => 500 },
+    { :workers => 10, :job_count => 1000 },
+    { :workers => 15, :job_count => 1500 },
+    { :workers => 20, :job_count => 5000 },
+    { :workers => 30, :job_count => 10_000 }
   ]
 HerokuResqueScaler::Scaler.scaling_configuration = resque_scaler_config
 
