@@ -66,7 +66,7 @@ module HerokuResqueScaler
             if self.workers <= scale_info[:workers]
               self.workers = scale_info[:workers]
             end
-            return self.scale_info[:workers] # We've set or ensured that the worker count is high enough
+            return scale_info[:workers] # We've set or ensured that the worker count is high enough
           # Otherwise just return the number of workers
           else
             return self.workers
