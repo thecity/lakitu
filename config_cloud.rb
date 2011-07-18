@@ -17,15 +17,18 @@ EC2      = Fog::Compute.new(
 HEROKU   = Heroku::Client.new(ENV['HEROKU_USER'], ENV['HEROKU_PASS'])
 
 # Resque checking
-Resque.redis = ENV['REDIS_URL']
-RESQUE_QUEUE_LIMIT = 100_000
+Resque.redis           = ENV['REDIS_URL']
+Resque.redis.namespace = ENV['REDIS_NAMESPACE']
+RESQUE_QUEUE_LIMIT     = 100_000
 
 # NewRelic dyno scaling
 dyno_scaler_config = 
   [
-    { :rpm_range => 0..200,       :dynos => 2 },
-    { :rpm_range => 201..500,     :dynos => 15 },
-    { :rpm_range => 501..1000,    :dynos => 20 },
+    { :rpm_range => 0..200,       :dynos => 2 }, # things are quiet at night
+    { :rpm_range => 201..300,     :dynos => 10 },
+    { :rpm_range => 301..500,     :dynos => 15 },
+    { :rpm_range => 501..800,     :dynos => 20 },
+    { :rpm_range => 501..1000,    :dynos => 25 },
     { :rpm_range => 1001..20_000, :dynos => 30 },
   ]
 HerokuDynoAutoScale::Scaler.scaling_configuration = dyno_scaler_config
