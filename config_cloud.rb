@@ -28,7 +28,7 @@ dyno_scaler_config =
     { :rpm_range => 201..300,     :dynos => 10 },
     { :rpm_range => 301..500,     :dynos => 15 },
     { :rpm_range => 501..800,     :dynos => 20 },
-    { :rpm_range => 501..1000,    :dynos => 25 },
+    { :rpm_range => 801..1000,    :dynos => 25 },
     { :rpm_range => 1001..20_000, :dynos => 30 },
   ]
 HerokuDynoAutoScale::Scaler.scaling_configuration = dyno_scaler_config
