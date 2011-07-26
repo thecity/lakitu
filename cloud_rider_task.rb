@@ -138,7 +138,7 @@ namespace 'lakitu' do
       # if Time.now.hour == 4 # 3 AM
         db_server_id = ENV['RDS_DATABASE_ID']
         db_server = RDS.servers.get(db_server_id)
-        if db_server.nil
+        if db_server.nil?
           puts "Could not find server #{db_server_id} to snapshot"
         end
         puts "Taking snapshot of #{db_server_id}..."
