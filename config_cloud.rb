@@ -12,7 +12,13 @@ NEWRELIC = NewRelicClient.new(ENV['NEW_RELIC_API_KEY'], ENV['NEW_RELIC_ID'], ENV
 EC2      = Fog::Compute.new(
             :provider => 'AWS', 
             :aws_access_key_id => ENV['AWS_ACCESS_KEY_ID'],
+            :aws_secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
+           )
+
+RDS      = Fog::AWS::RDS.new( 
+            :aws_access_key_id => ENV['AWS_ACCESS_KEY_ID'],
             :aws_secret_access_key => ENV['AWS_SECRET_ACCESS_KEY'])
+           )
             
 HEROKU   = Heroku::Client.new(ENV['HEROKU_USER'], ENV['HEROKU_PASS'])
 

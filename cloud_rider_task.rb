@@ -6,6 +6,7 @@ namespace 'lakitu' do
     
     required_vars = %w(HEROKU_USER HEROKU_PASS HEROKU_APP 
                        AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY 
+                       RDS_DATABASE_ID
                        NEW_RELIC_API_KEY NEW_RELIC_ID NEW_RELIC_APPID 
                        MEMCACHED_NAME_PREFIX REDIS_URL
                        SENDGRID_DOMAIN SENDGRID_USERNAME SENDGRID_PASSWORD)
@@ -132,6 +133,25 @@ namespace 'lakitu' do
       if run_count == 0
         # Nothing yet.
       end
+      
+      # 3 AM every day 
+      # if Time.now.hour == 4 # 3 AM
+        db_server = RDS.servers.get(RDS_DATABASE_ID)
+        if db_server.nil
+          puts "Could not find server #{RDS_DATABASE_ID} to snapshot"
+        end
+        puts "Taking snapshot of #{RDS_DATABASE_ID}..."
+        snap_id = "#{RDS_DATABASE_ID}-daily-snap-#{Time.now.strftime('%Y-%m-%d-%H-%M-%S')}"
+        snapshot = db_server.snapshots.new(:id => snap_id).save
+        puts "Requested snapshot #{snap_id}"
+        
+        daily_snaps = db_server.snapshots.find_all {|snap| snap.id =~ /.+-daily-snap-.+/ and snap.ready? }
+        if daily_snaps.size > 40
+          daily_snaps.sort{ |x,y| x.created_at <=> y.created_at }
+          "Pruning snapshot #{daily_snaps.last.id}, created at #{daily_snaps.last.created_at}"
+          daily_snaps.last.destroy
+        end
+      # end
     end
     
   end
