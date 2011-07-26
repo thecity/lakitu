@@ -135,7 +135,7 @@ namespace 'lakitu' do
       end
       
       # 3 AM every day 
-      # if Time.now.hour == 4 # 3 AM
+      if Time.now.hour == 4 # 3 AM
         db_server_id = ENV['RDS_DATABASE_ID']
         db_server = RDS.servers.get(db_server_id)
         if db_server.nil?
@@ -152,7 +152,7 @@ namespace 'lakitu' do
           "Pruning snapshot #{daily_snaps.last.id}, created at #{daily_snaps.last.created_at}"
           daily_snaps.last.destroy
         end
-      # end
+      end
     end
     
   end
