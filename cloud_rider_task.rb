@@ -136,12 +136,13 @@ namespace 'lakitu' do
       
       # 3 AM every day 
       # if Time.now.hour == 4 # 3 AM
-        db_server = RDS.servers.get(RDS_DATABASE_ID)
+        db_server_id = ENV['RDS_DATABASE_ID']
+        db_server = RDS.servers.get(db_server_id)
         if db_server.nil
-          puts "Could not find server #{RDS_DATABASE_ID} to snapshot"
+          puts "Could not find server #{db_server_id} to snapshot"
         end
-        puts "Taking snapshot of #{RDS_DATABASE_ID}..."
-        snap_id = "#{RDS_DATABASE_ID}-daily-snap-#{Time.now.strftime('%Y-%m-%d-%H-%M-%S')}"
+        puts "Taking snapshot of #{db_server_id}..."
+        snap_id = "#{db_server_id}-daily-snap-#{Time.now.strftime('%Y-%m-%d-%H-%M-%S')}"
         snapshot = db_server.snapshots.new(:id => snap_id).save
         puts "Requested snapshot #{snap_id}"
         
