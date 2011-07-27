@@ -54,12 +54,13 @@ module HerokuResqueScaler
       
       def scale_workers
         # Nothing fancy, just trim back to the minimum workers if there's no jobs
-        return self.workers = self.scaling_configuration.first[:workers]  if self.job_count.zero?
+        return (self.workers = self.scaling_configuration.first[:workers]) if self.job_count.zero?
 
         self.scaling_configuration.reverse_each do |scale_info|
           # Run backwards so it gets set to the highest value first
           # Otherwise if there were 70 jobs, it would get set to 1, then 2, then 3, etc
-
+          
+          puts "testing job count #{self.job_count} against scale bucket #{scale_info[:job_count]} which has workers #{scale_info[:workers]}"
           # If we have a job count greater than or equal to the job limit for this scale info
           if self.job_count >= scale_info[:job_count]
             # Set the number of workers unless they are already set to a level we want. Don't scale down here!
