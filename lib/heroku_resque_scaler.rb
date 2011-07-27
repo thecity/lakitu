@@ -66,14 +66,13 @@ module HerokuResqueScaler
             # Set the number of workers unless they are already set to a level we want. Don't scale down here!
             if self.workers <= scale_info[:workers]
               self.workers = scale_info[:workers]
+              return scale_info[:workers] # We've set or ensured that the worker count is high enough
             end
-            return scale_info[:workers] # We've set or ensured that the worker count is high enough
-          # Otherwise just return the number of workers
-          else
-            return self.workers
           end
         end
         
+        # None of the scale_info cases were hit, so we didn't need to scale
+        return self.workers
       end
     end
   end
