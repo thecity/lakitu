@@ -42,7 +42,7 @@ HerokuDynoAutoScale::Scaler.scaling_configuration = dyno_scaler_config
 # Please order this by workers, ascending
 resque_scaler_config = 
   [
-    { :workers => 1,  :job_count => 1  },
+    { :workers => 2,  :job_count => 1  },
     { :workers => 3,  :job_count => 100 },
     { :workers => 5,  :job_count => 200 },
     { :workers => 8,  :job_count => 500 },
