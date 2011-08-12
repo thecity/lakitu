@@ -29,7 +29,7 @@ RESQUE_QUEUE_LIMIT     = 100_000
 # NewRelic dyno scaling
 dyno_scaler_config = 
   [
-    { :rpm_range => 0..200,       :dynos => 2 }, # things are quiet at night
+    { :rpm_range => 0..200,       :dynos => 5 }, # hedge against dying dynos due to memory limits
     { :rpm_range => 201..300,     :dynos => 10 },
     { :rpm_range => 301..500,     :dynos => 15 },
     { :rpm_range => 501..800,     :dynos => 20 },
