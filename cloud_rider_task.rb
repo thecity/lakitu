@@ -149,9 +149,9 @@ namespace 'lakitu' do
         
         daily_snaps = db_server.snapshots.find_all {|snap| snap.id =~ /.+-daily-snap-.+/ and snap.ready? }
         if daily_snaps.size > 40
-          daily_snaps.sort{ |x,y| x.created_at <=> y.created_at }
-          "Pruning snapshot #{daily_snaps.last.id}, created at #{daily_snaps.last.created_at}"
-          daily_snaps.first.destroy
+          doomed_snap = daily_snaps.sort{ |x,y| x.created_at <=> y.created_at }.first
+          "Pruning snapshot #{doomed_snap.id}, created at #{doomed_snap.created_at}"
+          doomed_snap.destroy
         end
       end
     end
