@@ -36,14 +36,15 @@ namespace 'lakitu' do
       
       # Run 0, 5, 10, 15... (every 5 minutes)
       if run_count % 5 == 0
-        puts 'Scaling dynos...'
-        # Scale the dynos based on RPM
-        if health = NEWRELIC.application_health
-          dynos = HerokuDynoAutoScale::Scaler.scale_dynos(health[:rpm].to_i)
-          puts "New Relic reported RPM of #{health[:rpm]}, dynos set to #{dynos}"
-        else
-          puts "New Relic failed to deliver application health in a timely manner :("
-        end
+        # DISABLED UNTIL THE #scale_dynos method is fixed!
+        # puts 'Scaling dynos...'
+        # # Scale the dynos based on RPM
+        # if health = NEWRELIC.application_health
+        #   dynos = HerokuDynoAutoScale::Scaler.scale_dynos(health[:rpm].to_i)
+        #   puts "New Relic reported RPM of #{health[:rpm]}, dynos set to #{dynos}"
+        # else
+        #   puts "New Relic failed to deliver application health in a timely manner :("
+        # end
       end
       # Run 0, 10, 20, 30, 40, 50 (every 10 minutes)        
       if run_count % 10 == 0
@@ -150,7 +151,7 @@ namespace 'lakitu' do
         if daily_snaps.size > 40
           daily_snaps.sort{ |x,y| x.created_at <=> y.created_at }
           "Pruning snapshot #{daily_snaps.last.id}, created at #{daily_snaps.last.created_at}"
-          daily_snaps.last.destroy
+          daily_snaps.first.destroy
         end
       end
     end
