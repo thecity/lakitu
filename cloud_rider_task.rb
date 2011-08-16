@@ -136,7 +136,7 @@ namespace 'lakitu' do
       end
       
       # 3 AM every day 
-      if Time.now.hour == 4 # 3 AM
+      if run_count == 0 and Time.now.hour == 4 # 3:00 AM
         db_server_id = ENV['RDS_DATABASE_ID']
         db_server = RDS.servers.get(db_server_id)
         if db_server.nil?
