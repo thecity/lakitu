@@ -92,7 +92,7 @@ namespace 'lakitu' do
                "does not match heroku config #{heroku_config['MEMCACHE_SERVERS']}"
           AlertMailer.deliver_alert("Memcached alert - server misconfigured.", 
             "Memcached Severity 2:\n\n Memcached server addresses of #{memcached_addresses.join(',')} " + \
-            "does not match configuration of #{heroku_config['MEMCACHED_SERVERS']} in #{ENV['HEROKU_APP']}.")
+            "does not match configuration of #{heroku_config['MEMCACHE_SERVERS']} in #{ENV['HEROKU_APP']}.")
         end
         
         puts "EC2 checked"
