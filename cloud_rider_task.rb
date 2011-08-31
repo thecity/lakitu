@@ -15,10 +15,8 @@ end
 # Synced logging for puts
 STDERR.sync = STDOUT.sync = true
 
-handler { |job| Kernel.const_get(job).push({}) }
-
-every 1.minute,  'WORKER_SCALING_QUEUE'
-every 5.minute,  'DYNO_SCALING_QUEUE'
-every 10.minute, 'EC2_CHECKING_QUEUE'
-every 15.minute, 'RESQUE_CHECKING_QUEUE'
-every 1.day, 'RDS_BACKUP_QUEUE', :at => '04:00'
+every(1.minute,  'worker_scaling')             { WORKER_SCALING_QUEUE.push({}) }
+every(5.minute,  'dyno_scaling')               { DYNO_SCALING_QUEUE.push({})   }
+every(10.minute, 'ec2_checking')               { EC2_CHECKING_QUEUE.push({})   }
+every(15.minute, 'resque_checking')            { RESQUE_CHECKING_QUEUE.push({})}
+every(1.day,     'rds_backup', :at => '11:00') { RDS_BACKUP_QUEUE.push({}) } #UTC suckas

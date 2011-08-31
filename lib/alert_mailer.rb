@@ -8,7 +8,7 @@ class AlertMailer
   end
 
   def setup
-    @to = 'jonathan@onthecity.org' # 'notifications@onthecity.org'
+    @to = 'notifications@onthecity.org'
     @cc = ''                       # 'sev2@thecity.pagerduty.com'
     @from = 'lakitu-alerts'
   end

@@ -5,8 +5,9 @@ RDS_BACKUP_QUEUE = GirlFriday::WorkQueue.new(:rds_backup_queue, :size => 1) do |
               
   db_server_id = ENV['RDS_DATABASE_ID']
   db_server = rds.servers.get(db_server_id)
-  if db_server.nil?
+  unless db_server
     puts "Could not find server #{db_server_id} to snapshot"
+    next
   end
   puts "Taking snapshot of #{db_server_id}..."
   snap_id = "#{db_server_id}-daily-snap-#{Time.now.strftime('%Y-%m-%d-%H-%M-%S')}"
