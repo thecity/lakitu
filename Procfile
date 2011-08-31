@@ -1,1 +1,1 @@
-cloudrider: bundle exec rake lakitu:cloud_rider
+cloudrider: bundle exec clockwork cloud_rider_task.rb

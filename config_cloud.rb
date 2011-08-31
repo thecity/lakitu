@@ -1,29 +1,18 @@
 require 'heroku'
 require 'fog'
 require 'resque'
+require 'girl_friday'
 require './lib/alert_mailer'
 require './lib/heroku_dyno_auto_scale'
 require './lib/new_relic_client'
 require './lib/heroku_resque_scaler'
-
-# API Access
-NEWRELIC = NewRelicClient.new(ENV['NEW_RELIC_API_KEY'], ENV['NEW_RELIC_ID'], ENV['NEW_RELIC_APPID'])
-
-EC2      = Fog::Compute.new(
-            :provider => 'AWS', 
-            :aws_access_key_id => ENV['AWS_ACCESS_KEY_ID'],
-            :aws_secret_access_key => ENV['AWS_SECRET_ACCESS_KEY']
-           )
-
-RDS      = Fog::AWS::RDS.new( 
-            :aws_access_key_id => ENV['AWS_ACCESS_KEY_ID'],
-            :aws_secret_access_key => ENV['AWS_SECRET_ACCESS_KEY'])
-            
-HEROKU   = Heroku::Client.new(ENV['HEROKU_USER'], ENV['HEROKU_PASS'])
+require './lib/queues/dyno_scaling_queue'
+require './lib/queues/ec2_checking_queue'
+require './lib/queues/rds_backup_queue'
+require './lib/queues/resque_checking_queue'
+require './lib/queues/worker_scaling_queue'
 
 # Resque checking
-Resque.redis           = ENV['REDIS_URL']
-Resque.redis.namespace = ENV['REDIS_NAMESPACE']
 RESQUE_QUEUE_LIMIT     = 100_000
 
 # NewRelic dyno scaling
