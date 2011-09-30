@@ -7,13 +7,11 @@ module HerokuResqueScaler
       @@heroku = Heroku::Client.new(ENV['HEROKU_USER'], ENV['HEROKU_PASS'])
       
       def workers
-        # Seems like I only care about how many workers are reporting.
-        # But we'll see.
-        # if self.should_scale_workers?
-          # @@heroku.info(ENV['HEROKU_APP'])[:workers].to_i
-        # else
+        if self.should_scale_workers?
+          @@heroku.info(ENV['HEROKU_APP'])[:workers].to_i
+        else
           Resque.info[:workers].to_i          
-        # end
+        end
       end
 
       def workers=(qty)

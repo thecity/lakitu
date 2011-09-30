@@ -1,4 +1,4 @@
-RDS_BACKUP_QUEUE = GirlFriday::WorkQueue.new(:rds_backup_queue, :size => 1) do |msg|
+RDS_SNAPSHOT_QUEUE = GirlFriday::WorkQueue.new(:rds_snapshot_queue, :size => 1) do |msg|
   rds = Fog::AWS::RDS.new( 
               :aws_access_key_id => ENV['AWS_ACCESS_KEY_ID'],
               :aws_secret_access_key => ENV['AWS_SECRET_ACCESS_KEY'])

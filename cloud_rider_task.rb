@@ -15,8 +15,8 @@ end
 # Synced logging for puts
 STDERR.sync = STDOUT.sync = true
 
-every(1.minute,  'worker_scaling')             { WORKER_SCALING_QUEUE.push({}) }
+every(2.minute,  'worker_scaling')             { WORKER_SCALING_QUEUE.push({}) }
 every(5.minute,  'dyno_scaling')               { DYNO_SCALING_QUEUE.push({})   }
 every(10.minute, 'ec2_checking')               { EC2_CHECKING_QUEUE.push({})   }
 every(15.minute, 'resque_checking')            { RESQUE_CHECKING_QUEUE.push({})}
-every(1.day,     'rds_backup', :at => '11:00') { RDS_BACKUP_QUEUE.push({}) } #UTC suckas
+every(1.day,     'rds_snapshot', :at => '11:00') { RDS_SNAPSHOT_QUEUE.push({}) } #UTC suckas
