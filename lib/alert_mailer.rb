@@ -8,8 +8,7 @@ class AlertMailer
   end
 
   def setup
-    @to = 'notifications@onthecity.org'
-    @cc = 'sev2@thecity.pagerduty.com'
+    @to = ENV['ALERTS_EMAIL']
     @from = "#{HEROKU_APP}-lakitu-alerts"
   end
     

@@ -1,11 +1,11 @@
-**Lakitu** lives in the cloud and rescues lost resque racers while throwing spinys at you when things go wrong.
+**Lakitu** lives in the cloud and throws emails at you when things go wrong.
 
 He can:
 
 * Monitor a Resque queue backlog.
 * Make sure a set of Heroku config settings stay up to date.
-* Scale dynos based on data from NewRelic
-* Make sure a set of AWS servers are doing the right thing.
+* Scale resque workers based on queue size.
+* Make sure a set of memcached servers are up.
   
 He will:
 
@@ -13,24 +13,32 @@ He will:
 
 Define these ENV vars (using _[heroku config ...](http://docs.heroku.com/config-vars)_) :
 
+The credentials for the Heroku application you're monitoring.
+
 * HEROKU_USER
 * HEROKU_PASS
 * HEROKU_APP 
 
+The AWS credentials for the EC2 servers backing your application.
+
 * AWS_ACCESS_KEY_ID
 * AWS_SECRET_ACCESS_KEY 
 
-* NEW_RELIC_API_KEY
-* NEW_RELIC_ID
-* NEW_RELIC_APPID 
+The prefix of the EC2 Name tags of your memcached servers. Your production Heroku app should store its memcached server list in a comma-separated string of IPs in ENV['MEMCACHE_SERVERS']. 
 
-* MEMCACHED_NAME_PREFIX - the first part of the EC2 Name tags of your memcached servers
-* REDIS_URL - the URL of your redis server
+* MEMCACHED_NAME_PREFIX
+
+The URL of your Redis server that backs your Resque workers.
+
+* REDIS_URL
+
+Sendgrid credentials to deliver alerts.
 
 * SENDGRID_USERNAME
 * SENDGRID_PASSWORD
 * SENDGRID_DOMAIN
 
-This will give Lakitu access to both sides of the app and make sure they're in good shape.
+The email addresses to deliver alerts to, comma-separated.
 
-Your production app should store its memcached server list in a comma-separated string of IPs in ENV['MEMCACHE_SERVERS']
+* ALERTS_EMAIL
+
