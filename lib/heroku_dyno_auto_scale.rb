@@ -1,4 +1,7 @@
 # Adapted from http://blog.darkhax.com/2010/07/30/auto-scale-your-resque-workers-on-heroku
+# However, we discovered in practice that bucketing dyno scale based on RPM did not work,
+# as the app maxes out its RPM at a certain scale, then requests just start backing up.
+# Hence this is disabled but left here in hope that it might be useful later.
 require 'heroku'
 
 module HerokuDynoAutoScale

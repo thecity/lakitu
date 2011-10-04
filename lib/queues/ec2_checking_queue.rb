@@ -1,6 +1,5 @@
 EC2_CHECKING_QUEUE = GirlFriday::WorkQueue.new(:ec2_queue, :size => 2) do |msg|
   puts 'Checking EC2 servers'
-  # Check on our EC2 services.
   heroku_config = Heroku::Client.new(ENV['HEROKU_USER'], ENV['HEROKU_PASS']).config_vars(ENV['HEROKU_APP'])
   ec2 = Fog::Compute.new(
               :provider => 'AWS', 
