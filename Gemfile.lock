@@ -78,4 +78,5 @@ DEPENDENCIES
   httparty
   json (~> 1.4.6)
   mail
+  redis
   resque (= 1.15.0)
