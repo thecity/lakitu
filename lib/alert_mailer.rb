@@ -9,7 +9,7 @@ class AlertMailer
 
   def setup
     @to = ENV['ALERTS_EMAIL']
-    @from = "#{HEROKU_APP}-lakitu-alerts"
+    @from = "#{ENV['HEROKU_APP']}-lakitu-alerts"
   end
     
   def deliver(subject, body)

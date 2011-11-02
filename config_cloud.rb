@@ -11,6 +11,7 @@ require './lib/queues/ec2_checking_queue'
 require './lib/queues/rds_backup_queue'
 require './lib/queues/resque_checking_queue'
 require './lib/queues/worker_scaling_queue'
+require './lib/queues/redis_checking_queue'
 
 # Resque checking
 RESQUE_QUEUE_LIMIT     = 100_000
