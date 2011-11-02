@@ -23,7 +23,12 @@ STDERR.sync = STDOUT.sync = true
 every(2.minute,  'worker_scaling')               { WORKER_SCALING_QUEUE.push({}) }
 # This didn't work right.
 # every(5.minute,  'dyno_scaling')               { DYNO_SCALING_QUEUE.push({})   }
-every(10.minute, 'ec2_checking')                 { EC2_CHECKING_QUEUE.push({})   }
+
+# staging doesn't need this
+if ENV['HEROKU_APP'] == 'thecity-production'
+  every(10.minute, 'ec2_checking')                 { EC2_CHECKING_QUEUE.push({})   }
+end
+
 every(15.minute, 'resque_checking')              { RESQUE_CHECKING_QUEUE.push({})}
 every(15.minute, 'redis_checking')               { REDIS_CHECKING_QUEUE.push({}) }
 every(1.day,     'rds_snapshot', :at => '11:00') { RDS_SNAPSHOT_QUEUE.push({}) } #UTC suckas

@@ -3,7 +3,7 @@ REDIS_CHECKING_QUEUE = GirlFriday::WorkQueue.new(:redis_checker, :size => 1) do 
   check_servers = ENV['REDIS_SERVERS'].split(',')
   check_servers.each do |redis_server_url|
     begin
-      server = Redis.new(redis_server_url)
+      server = Redis.connect(:url => redis_server_url)
       max_memory  = server.config(:get, 'maxmemory')['maxmemory'].to_f
       used_memory = server.info['used_memory'].to_f
       
