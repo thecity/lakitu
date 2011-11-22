@@ -15,6 +15,8 @@ require './lib/queues/redis_checking_queue'
 
 # Resque checking
 RESQUE_QUEUE_LIMIT     = 100_000
+Resque.redis           = ENV['RESQUE_REDIS_URL']
+Resque.redis.namespace = ENV['RESQUE_REDIS_NAMESPACE']
 
 # NewRelic dyno scaling
 dyno_scaler_config = 

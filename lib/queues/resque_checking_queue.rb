@@ -1,7 +1,5 @@
 RESQUE_CHECKING_QUEUE = GirlFriday::WorkQueue.new(:resque_checker, :size => 1) do |msg|
   puts "Checking Resque"
-  Resque.redis           = ENV['RESQUE_REDIS_URL']
-  Resque.redis.namespace = ENV['RESQUE_REDIS_NAMESPACE']
   
   # Check the resque queue size and, implicitly, redis connectivity
   is_error   = false
