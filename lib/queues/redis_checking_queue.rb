@@ -12,11 +12,13 @@ REDIS_CHECKING_QUEUE = GirlFriday::WorkQueue.new(:redis_checker, :size => 1) do 
   else
     check_servers.each_with_index do |redis_server_url, i|
       begin
+        puts "Checking Redis server #{redis_server_url}..."
         server = Redis.connect(:url => redis_server_url)
         # redistogo renames config to some obscure sha1, so we have to send it via method_missing
         max_memory  = server.send(cfg_cmds[i], :get, 'maxmemory')['maxmemory'].to_f
         used_memory = server.info['used_memory'].to_f
       
+        puts "#{redis_server_url} used #{used_pct}% memory used"
         used_pct = max_memory.zero? ? 0 : ((used_memory / max_memory)*100).ceil
 
         if used_pct > ENV['REDIS_MEMORY_THRESHOLD'].to_i
