@@ -9,7 +9,7 @@ required_vars = %w(HEROKU_USER HEROKU_PASS HEROKU_APP
                    RESQUE_REDIS_URL RESQUE_REDIS_NAMESPACE
                    SENDGRID_DOMAIN SENDGRID_USERNAME SENDGRID_PASSWORD
                    ALERTS_EMAIL
-                   REDIS_SERVERS REDIS_CONFIG_CMDS REDIS_MEMORY_THRESHOLD)
+                   REDIS_SERVER_URLS REDIS_CONFIG_CMDS REDIS_MEMORY_THRESHOLD)
                    # If dyno scaling was on you'd need these too.
                    # NEW_RELIC_API_KEY NEW_RELIC_ID NEW_RELIC_APPID 
                    
