@@ -5,7 +5,8 @@ He can:
 * Monitor a Resque queue backlog.
 * Make sure a set of Heroku config settings stay up to date.
 * Scale resque workers based on queue size.
-* Make sure a set of memcached servers are up.
+* Monitor the memory usage and uptime of a set of Redis servers.
+* Make sure a set of EC2-based memcached servers are up.
 * Take an RDS snapshot every so often.
   
 He will:
@@ -29,9 +30,11 @@ The prefix of the EC2 Name tags of your memcached servers. Your production Herok
 
 * MEMCACHED_NAME_PREFIX
 
-The URL of your Redis server that backs your Resque workers.
+The URL of your Redis server that backs your Resque workers, and the namespace of the Resque data. Optionally, a queue size threshold to monitor.
 
 * RESQUE_REDIS_URL
+* RESQUE_NAMESPACE
+* RESQUE_QUEUE_LIMIT
 
 The comma-separated URLs of any other Redis servers you wish to monitor. Optionally, custom configuration commands for each server. 
 Example:
