@@ -35,6 +35,7 @@ The URL of your Redis server that backs your Resque workers.
 
 The comma-separated URLs of any other Redis servers you wish to monitor. Optionally, custom configuration commands for each server. 
 Example:
+
     REDIS_SERVER_URLS: "redis://username:password@pike.redistogo.com:5044,redis://ip-10-114-119-41.ec2.internal"
     REDIS_CONFIG_CMDS: "a2352352365f,config"
 
