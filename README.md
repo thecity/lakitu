@@ -21,7 +21,7 @@ The credentials for the Heroku application you're monitoring.
 * HEROKU_PASS
 * HEROKU_APP 
 
-The AWS credentials for the EC2 servers backing your application.
+The AWS credentials for the EC2 memcached servers.
 
 * AWS_ACCESS_KEY_ID
 * AWS_SECRET_ACCESS_KEY 
@@ -43,13 +43,13 @@ Example:
     REDIS_CONFIG_CMDS: "a2352352365f,config"
 
 * REDIS_SERVER_URLS
-* REDIS_CONFIFG_CMDS
+* REDIS_CONFIG_CMDS
 
 The database ID of the RDS server you'd like to snapshot. 10 rolling snapshots will be retained.
 
 * RDS_DATABASE_ID
 
-Sendgrid credentials to deliver alerts.
+Sendgrid credentials to deliver alerts. Probably configured for you by Heroku.
 
 * SENDGRID_USERNAME
 * SENDGRID_PASSWORD
