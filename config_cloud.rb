@@ -14,7 +14,7 @@ require './lib/queues/worker_scaling_queue'
 require './lib/queues/redis_checking_queue'
 
 # Resque checking
-RESQUE_QUEUE_LIMIT     = 100_000
+RESQUE_QUEUE_LIMIT     = ENV['RESQUE_QUEUE_LIMIT'].to_i > 0 ? ENV['RESQUE_QUEUE_LIMIT'].to_i : 100_000
 Resque.redis           = ENV['RESQUE_REDIS_URL']
 Resque.redis.namespace = ENV['RESQUE_REDIS_NAMESPACE']
 
